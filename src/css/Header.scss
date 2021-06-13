@@ -1,0 +1,13 @@
+$font-stack:    Helvetica, sans-serif;
+$primary-color: white;
+$backG-color: rgb(49, 47, 47);
+
+header {
+    font: 100% $font-stack;
+    color: $primary-color;
+    background-color: $backG-color;
+    text-align: center;
+    height: 100px;
+    padding: 30px 0 ;
+  }
+

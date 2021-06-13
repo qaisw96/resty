@@ -1,0 +1,60 @@
+$backG-color: rgba(128, 128, 128, 0.479);
+@mixin wid-hig($width) {
+  width: $width;
+  height: 35px;
+}
+
+
+form {
+    text-align: center;
+    .sub-form {
+      padding: 30px;
+      input {
+        @include wid-hig(300px)
+      }
+
+      button {
+        @include wid-hig(100px)
+      }
+    }
+    .crud {
+        width: 35%;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin: 0 auto;
+
+    }
+    .output {
+      width: 80%;
+      height: 100vh;
+      margin: 3% auto;
+      background-color: $backG-color;
+
+      div {
+        padding: 20px;
+        width: 400px;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+}
+
+.btn {
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    padding: 8px 18px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .btn:hover, .btn:focus {
+    background-color: #04AA6D;
+    color: white;
+  }
+  
+  #on-click {
+    background-color: #04AA6D;
+    color: white;
+  }
