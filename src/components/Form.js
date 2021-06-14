@@ -1,60 +1,57 @@
+import React from 'react'
 import '../css/Form.scss'
-import { useState } from "react"
-
-const Form = () => {
-    const [items, setItems] = useState([])
-    const [item, setItem] = useState([])
-  
-    function addUrl(e) {
-        item.url = e.target.value
-    }
-
-    let met = 'get';
-    function addMethod(e) {
-        document.querySelector(`.${met}`).setAttribute('id', '')
-        const el = document.querySelector(`.${e.target.classList[1]}`)
-        el.setAttribute("id", "on-click")
-        const method = e.target.innerText
-        item.method= method
-        met = e.target.classList[1]
-    }
-    function btnHandler(e) {
-        document.querySelector(`.input-url`).value = ""
-        e.preventDefault()
-        if(!item.method || !item.url) {
-            alert('Enter A Method Or A URL') 
-            return
+// import { useState } from "react"
+class Form extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            url: '',
+            method: ''
         }
-        setItems([...items, item])
-        setItem([''])
-        document.querySelector(`.${item.method.toLowerCase()}`).setAttribute('id', '')
+
+    }
+    addUrl = (e) => {
+        this.setState({url:  e.target.value})
     }
     
+    addMethod = (method) => {
+        // console.log(this.props);
+        this.setState({method: method})
+    }
 
-    return (
-        <form>
-            <div className="sub-form">
-                <input className="input-url"  onChange={addUrl} required />
-                <button onClick={btnHandler} >GO!</button>
-            </div>
-            <div className="crud">
-                <div value="get" className="btn get" onClick={addMethod} >GET</div>
-                <div value="post" className="btn post" onClick={addMethod}>POST</div>
-                <div value="put" className="btn put" onClick={addMethod}>PUT</div>
-                <div value="delete" className="btn delete" onClick={addMethod}>DELETE</div>
-            </div>
-            <div className="output">
-            {items.map(item => { 
-               return <div>
-                        <p>{item.method}</p>
-                        <p>{item.url}</p>
+    handleSubmit = async (e) => {
+        e.preventDefault()
+        let raw = await fetch(this.state.url)
+        let data = await raw.json()
+        console.log(data);
+        const result = data.results
+        const count = data.count
+        return  this.state.method === 'GET' ? this.props.handler(result, count, data.next) : ''
+        
+    }
+
+    render() {
+        return (
+            <form>
+                <div className="sub-form">
+                    <input className="input-url"  onChange={this.addUrl} required />
+                    <button onClick={this.handleSubmit} >GO!</button>
                 </div>
-                })}
-
-            </div>
-        </form>
+                <div className="crud">
+                    <div value="get" className={this.state.method === 'GET'? 'on-click' :  'q'}  onClick={() => this.addMethod('GET')} >GET</div>
+                    <div value="post" className={this.state.method === 'POST'? 'on-click' :  'q'}  onClick={() => this.addMethod('POST')}>POST</div>
+                    <div value="put" className={this.state.method === 'PUT'? 'on-click' :  'q'} onClick={() => this.addMethod('PUT')} >PUT</div>
+                    <div value="delete" className={this.state.method === 'DELETE'? 'on-click' :  'q'} onClick={() => this.addMethod('DELETE')} >DELETE</div>
+                </div>
+            </form>
     )
+
+} 
+
 }
+   
+
 
 
 export default Form
+
