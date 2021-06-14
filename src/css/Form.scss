@@ -24,6 +24,21 @@ form {
         flex-wrap: wrap;
         margin: 0 auto;
 
+        div {
+          border: 2px solid black;
+          background-color: white;
+          color: black;
+          padding: 8px 18px;
+          font-size: 16px;
+          cursor: pointer;
+      
+        }
+
+        div:hover, div:focus {
+          background-color: #04AA6D;
+          color: white;
+        }
+
     }
     .output {
       width: 80%;
@@ -40,19 +55,19 @@ form {
     }
 }
 
-.btn {
-    border: 2px solid black;
-    background-color: white;
-    color: black;
-    padding: 8px 18px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+// .btn {
+//     border: 2px solid black;
+//     background-color: white;
+//     color: black;
+//     padding: 8px 18px;
+//     font-size: 16px;
+//     cursor: pointer;
+//   }
 
-  .btn:hover, .btn:focus {
-    background-color: #04AA6D;
-    color: white;
-  }
+//   .btn:hover, .btn:focus {
+//     background-color: #04AA6D;
+//     color: white;
+//   }
   
   #on-click {
     background-color: #04AA6D;
