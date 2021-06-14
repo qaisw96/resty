@@ -2,19 +2,22 @@ import './css/App.scss';
 import React from 'react'
 import Header from './components/Header' 
 import Form from './components/Form' 
+import Results from './components/Results' 
 import Footer from './components/Footer' 
 
 class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      url : '',
-      method: 'get'
+     results : [],
+     count: 0,
+     next: null
     }
   }
 
-  handleData = (url) => {
-    console.log('handled');
+  handleData = (results, count, next) => {
+    console.log('from app',results);
+    this.setState({results,count, next })
   }
 
 
@@ -23,6 +26,7 @@ class App extends React.Component {
       <div className="App">
         <Header />
         <Form handler={this.handleData} />
+        <Results result={this.state}/>
         <Footer />
       </div>
     );
