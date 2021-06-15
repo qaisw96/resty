@@ -5,27 +5,34 @@ import Form from './components/Form'
 import Results from './components/Results' 
 import Footer from './components/Footer' 
 
+
 class App extends React.Component {
   constructor() {
     super()
     this.state = {
-     results : [],
+     headers : {},
+     results: {},
      count: 0,
-     next: null
+     show: false
     }
   }
 
-  handleData = (results, count, next) => {
+  handleData = (headers, results, count) => {
     console.log('from app',results);
-    this.setState({results,count, next })
+    this.setState({headers,results, count})
   }
+
+  handleShow = (check) => {
+    console.log(check);
+    this.setState({show: check})
+  } 
 
 
   render() {
     return (
       <div className="App">
         <Header />
-        <Form handler={this.handleData} />
+        <Form handler={this.handleData} checkResults={this.handleShow} />
         <Results result={this.state}/>
         <Footer />
       </div>

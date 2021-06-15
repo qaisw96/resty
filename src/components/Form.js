@@ -1,12 +1,14 @@
 import React from 'react'
 import '../css/Form.scss'
-// import { useState } from "react"
+import superagent from 'superagent'
+
+
 class Form extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            url: '',
-            method: ''
+            url: null,
+            method: null
         }
 
     }
@@ -21,13 +23,15 @@ class Form extends React.Component {
 
     handleSubmit = async (e) => {
         e.preventDefault()
-        let raw = await fetch(this.state.url)
-        let data = await raw.json()
-        console.log(data);
-        const result = data.results
-        const count = data.count
-        return  this.state.method === 'GET' ? this.props.handler(result, count, data.next) : ''
-        
+        let res;
+        if(this.state.method === 'GET') {
+            res = await superagent[`${this.state.method.toLocaleLowerCase()}`](this.state.url)
+            this.props.handler(res.headers, res.body.results, res.body.count)
+            console.log(res.headers, res.body.results, res.body.count);    
+            return res.body.results? this.props.checkResults(true) : this.props.checkResults(false)
+        } else {
+            return
+        }
     }
 
     render() {
