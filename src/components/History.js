@@ -1,10 +1,10 @@
 import '../css/History.scss'
 
-const History = (props) => {
+const History = ({queries, getQuery}) => {
     return (
         <div className="queries">
-            {props.queries.history.map(item => {
-                return <p >{item.method} ======= {item.url} </p>
+            {queries.map((item, idx) => {
+                return <p key={idx} onClick={() => getQuery(item.method, item.url)} >{item.method} ======= {item.url} </p>
             })}
         </div>
     )

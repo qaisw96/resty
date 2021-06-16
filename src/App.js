@@ -13,39 +13,36 @@ class App extends React.Component {
     this.state = {
      headers : {},
      results: {},
-     count: 0,
      show: false,
-     history: localStorage.getItem('history')? JSON.parse(localStorage.getItem('history')) : []
+     history: localStorage.getItem('history')? JSON.parse(localStorage.getItem('history')) : [],
+     query: {}
     }
   }
 
-  handleData = (headers, results, count) => {
-    console.log('from app',results);
-    this.setState({headers,results, count})
+  getFormData = async (Form, headers, results) => {
+    console.log(Form, headers, results);
+     this.setState({headers, results})
+     let query = {method: Form.method, url: Form.url}
+     this.setState({history: [...this.state.history, query]})
+     localStorage.setItem('history',JSON.stringify(this.state.history))
   }
-
+  
   handleShow = (check) => {
-    console.log(check);
     this.setState({show: check})
   } 
 
-  handleHistoryQueries = async (method, url) => {
-    let query = {method: method, url: url}
-    console.log('query', query);
-    await this.setState({history: [...this.state.history, query]})
-    console.log('this.state.history ======>', this.state.history);
-
-    localStorage.setItem('history',JSON.stringify(this.state.history))
-    console.log( 'from local storage =========', JSON.parse(localStorage.getItem('history')));
+  getQueryFromHistory = async (method, url) => {
+    await this.setState({query: {method, url}})
   }
+
 
   render() {
     return (
-      <div className="App">
+      <div className={this.show ? 'hidden': 'visible'} >
         <Header />
-        <Form handler={this.handleData} checkResults={this.handleShow} handleQueries= {this.handleHistoryQueries} />
+        <Form getMethod={this.getMethod} getFormData={this.getFormData} handleShow= {this.handleShow} query={this.state.query} />
         <div className="display" >
-          <History queries={this.state}  />
+          <History queries={this.state.history}  getQuery={this.getQueryFromHistory} />
           <Results result={this.state}/>
         </div>
         <Footer />

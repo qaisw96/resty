@@ -6,7 +6,6 @@ import If from './If-results.js'
 
 class Results extends React.Component {
     render() {
-        // console.log('from results',this.props.result.show);
 
         return(
             <div className="section-data">

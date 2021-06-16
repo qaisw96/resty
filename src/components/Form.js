@@ -3,52 +3,45 @@ import '../css/Form.scss'
 import superagent from 'superagent'
 
 class Form extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            url: null,
-            method: null,
-            body: null 
-        }
-    }
 
-    addMethod = (method) => {
-        this.setState({method: method})
-    }
-
+    
     submitForm = async (e) => {
         try {
             e.preventDefault()
-            let newUrl = e.target.url.value
-            let newBody = e.target.body.value
-            await this.setState({url: newUrl , body: newBody})
-    
-            let res;
-                res = await superagent[`${this.state.method.toLocaleLowerCase()}`](newUrl).send({newBody})
-                this.props.handler(res.headers, res.body, res.body.length)
-    
-                this.props.handleQueries(this.state.method, this.state.url)            
-                return res.body? this.props.checkResults(true) : this.props.checkResults(false)
+            let url = e.target.url.value
+            let body = e.target.body.value
+            let method = e.target.method.value
+            const Form = {url, body, method} 
+            let res = await superagent[`${method}`](url).send({body})
+            const headers = res.headers
+            const results = res.body
+            this.props.getFormData(Form, headers, results) 
+            this.props.query.url = null
+            
+            return res.body? this.props.handleShow(true) : this.props.handleShow(false)
         } catch (e) {
-            this.props.handler("ERROR", "ERROR", "ERROR")
+            this.props.handleShow("ERROR", "ERROR", "ERROR")
         }
     }
     
-    
     render() {
         return (
-            <form onSubmit= {this.submitForm}>
+            <form id="form" onSubmit= {this.submitForm}>
                 <div className="sub-form">
-                    <input className="input-url" name="url" required />
+                    <input className="input-url" name="url" value={this.props.query.url} />
                     <input className="btn" type="submit" /> 
                     <p>Body : </p>
                     <textarea type="text" name="body" cols="30" rows="5"></textarea>
                 </div>
-                <div className="crud">
-                    <div value="get" className={this.state.method === 'GET'? 'on-click' :  'q'}  onClick={() => this.addMethod('GET')} >GET</div>
-                    <div value="post" className={this.state.method === 'POST'? 'on-click' :  'q'}  onClick={() => this.addMethod('POST')}>POST</div>
-                    <div value="put" className={this.state.method === 'PUT'? 'on-click' :  'q'} onClick={() => this.addMethod('PUT')} >PUT</div>
-                    <div value="delete" className={this.state.method === 'DELETE'? 'on-click' :  'q'} onClick={() => this.addMethod('DELETE')} >DELETE</div>
+                <div id='method'  className="crud">
+                    <input type='radio' name='method' id='get' value='get' />
+                    <label>GET</label>
+                    <input type='radio' name='method' id='post' value='post'  />
+                    <label>POST</label>
+                    <input type='radio' name='method' id='put' value='put' />
+                    <label>PUT</label>
+                    <input type='radio' name='method' id='delete' value='delete'  />
+                    <label>DELETE</label>
                 </div>
             </form>
     )
