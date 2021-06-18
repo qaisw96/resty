@@ -1,47 +1,47 @@
 import React from 'react'
 import '../css/Form.scss'
-// import { useState } from "react"
-class Form extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            url: '',
-            method: ''
-        }
+import superagent from 'superagent'
 
-    }
-    addUrl = (e) => {
-        this.setState({url:  e.target.value})
+class Form extends React.Component {
+
+    
+    submitForm = async (e) => {
+        try {
+            e.preventDefault()
+            let url = e.target.url.value
+            let body = e.target.body.value
+            let method = e.target.method.value
+            const Form = {url, body, method} 
+            let res = await superagent[`${method}`](url).send({body})
+            const headers = res.headers
+            const results = res.body
+            this.props.getFormData(Form, headers, results) 
+            this.props.query.url = null
+            
+            return res.body? this.props.handleShow(true) : this.props.handleShow(false)
+        } catch (e) {
+            this.props.handleShow("ERROR", "ERROR", "ERROR")
+        }
     }
     
-    addMethod = (method) => {
-        // console.log(this.props);
-        this.setState({method: method})
-    }
-
-    handleSubmit = async (e) => {
-        e.preventDefault()
-        let raw = await fetch(this.state.url)
-        let data = await raw.json()
-        console.log(data);
-        const result = data.results
-        const count = data.count
-        return  this.state.method === 'GET' ? this.props.handler(result, count, data.next) : ''
-        
-    }
-
     render() {
         return (
-            <form>
+            <form id="form" onSubmit= {this.submitForm}>
                 <div className="sub-form">
-                    <input className="input-url"  onChange={this.addUrl} required />
-                    <button onClick={this.handleSubmit} >GO!</button>
+                    <input className="input-url" name="url" value={this.props.query.url} />
+                    <input className="btn" type="submit" /> 
+                    <p>Body : </p>
+                    <textarea type="text" name="body" cols="30" rows="5"></textarea>
                 </div>
-                <div className="crud">
-                    <div value="get" className={this.state.method === 'GET'? 'on-click' :  'q'}  onClick={() => this.addMethod('GET')} >GET</div>
-                    <div value="post" className={this.state.method === 'POST'? 'on-click' :  'q'}  onClick={() => this.addMethod('POST')}>POST</div>
-                    <div value="put" className={this.state.method === 'PUT'? 'on-click' :  'q'} onClick={() => this.addMethod('PUT')} >PUT</div>
-                    <div value="delete" className={this.state.method === 'DELETE'? 'on-click' :  'q'} onClick={() => this.addMethod('DELETE')} >DELETE</div>
+                <div id='method'  className="crud">
+                    <input type='radio' name='method' id='get' value='get' />
+                    <label>GET</label>
+                    <input type='radio' name='method' id='post' value='post'  />
+                    <label>POST</label>
+                    <input type='radio' name='method' id='put' value='put' />
+                    <label>PUT</label>
+                    <input type='radio' name='method' id='delete' value='delete'  />
+                    <label>DELETE</label>
                 </div>
             </form>
     )
@@ -50,8 +50,5 @@ class Form extends React.Component {
 
 }
    
-
-
-
 export default Form
 

@@ -6,3 +6,6 @@ Made By React
 
 ## UML Diagram (lab02) : 
 ![](./uml/lab02.png)
+
+## UML Diagram (lab03) : 
+![](./uml/lab03.png)

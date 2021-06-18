@@ -4,29 +4,47 @@ import Header from './components/Header'
 import Form from './components/Form' 
 import Results from './components/Results' 
 import Footer from './components/Footer' 
+import History from './components/History' 
+
 
 class App extends React.Component {
   constructor() {
     super()
     this.state = {
-     results : [],
-     count: 0,
-     next: null
+     headers : {},
+     results: {},
+     show: false,
+     history: localStorage.getItem('history')? JSON.parse(localStorage.getItem('history')) : [],
+     query: {}
     }
   }
 
-  handleData = (results, count, next) => {
-    console.log('from app',results);
-    this.setState({results,count, next })
+  getFormData = async (Form, headers, results) => {
+    console.log(Form, headers, results);
+     this.setState({headers, results})
+     let query = {method: Form.method, url: Form.url}
+     this.setState({history: [...this.state.history, query]})
+     localStorage.setItem('history',JSON.stringify(this.state.history))
+  }
+  
+  handleShow = (check) => {
+    this.setState({show: check})
+  } 
+
+  getQueryFromHistory = async (method, url) => {
+    await this.setState({query: {method, url}})
   }
 
 
   render() {
     return (
-      <div className="App">
+      <div className={this.show ? 'hidden': 'visible'} >
         <Header />
-        <Form handler={this.handleData} />
-        <Results result={this.state}/>
+        <Form getMethod={this.getMethod} getFormData={this.getFormData} handleShow= {this.handleShow} query={this.state.query} />
+        <div className="display" >
+          <History queries={this.state.history}  getQuery={this.getQueryFromHistory} />
+          <Results result={this.state}/>
+        </div>
         <Footer />
       </div>
     );
