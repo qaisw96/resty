@@ -5,6 +5,8 @@ import Form from './components/Form'
 import Results from './components/Results' 
 import Footer from './components/Footer' 
 import History from './components/History' 
+import Help from './components/Help' 
+import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
 
 class App extends React.Component {
@@ -18,7 +20,8 @@ class App extends React.Component {
      history: localStorage.getItem('history')? JSON.parse(localStorage.getItem('history')) : [],
      query: {
        url: null
-     }
+     },
+     reRun: false
     }
   }
 
@@ -40,21 +43,40 @@ class App extends React.Component {
   }
 
   getQueryFromHistory =  (method, url) => {
-     this.setState({query: {method, url}})
+     this.setState({query: {method, url}, reRun: true})
   }
   
 
   render() {
     return (
-      <div className={this.show ? 'hidden': 'visible'} >
-        <Header />
-        <Form getMethod={this.getMethod} getFormData={this.getFormData} handleShow= {this.handleShow} query={this.state.query} handleLoading={this.handleLoading} />
-        <div className="display" >
-          <History queries={this.state.history}  getQuery={this.getQueryFromHistory} />
-          <Results result={this.state}/>
-        </div>
-        <Footer />
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <div className={this.show ? 'hidden': 'visible'} >
+
+            <Route exact path="/">
+              <Header />
+              <Form getMethod={this.getMethod} getFormData={this.getFormData} handleShow= {this.handleShow} query={this.state.query} handleLoading={this.handleLoading} />
+                <div className="display" >
+                  <Results result={this.state}/>
+                </div>
+              <Footer />
+            </Route>
+            <Route  path="/history">
+              <Header />
+               <History queries={this.state.history}  getQuery={this.getQueryFromHistory} show={this.state.reRun} />
+              <Footer />
+            </Route>
+            <Route  path="/help">
+              <Header />
+                <Help />
+              <Footer />
+            </Route>
+          </div>
+        </Switch>
+            {/* <Route path="*" >
+              <h2>404 ERROR</h2>
+            </Route> */}
+      </BrowserRouter>
     );
 
   }
